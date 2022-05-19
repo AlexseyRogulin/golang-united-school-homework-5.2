@@ -18,14 +18,17 @@ func NewCache() Cache {
 }
 
 func (c Cache) Get(key string) (string, bool) {
+	cacheValue, ok := c.cache[key]
 	switch {
-	case c.cache[key].deadline != infinite && time.Now().After(c.cache[key].deadline):
+	case ok && cacheValue.deadline != infinite && time.Now().After(cacheValue.deadline):
 		delete(c.cache, key)
 		return "", false
-	case c.cache[key].deadline != infinite && !time.Now().After(c.cache[key].deadline):
-		return c.cache[key].value, true
+	case ok && cacheValue.deadline != infinite && !time.Now().After(cacheValue.deadline):
+		return cacheValue.value, true
+	case ok:
+		return cacheValue.value, true
 	default:
-		return c.cache[key].value, true
+		return "", false
 	}
 }
 
