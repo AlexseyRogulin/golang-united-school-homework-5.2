@@ -23,8 +23,6 @@ func (c Cache) Get(key string) (string, bool) {
 	case ok && cacheValue.deadline != infinite && time.Now().After(cacheValue.deadline):
 		delete(c.cache, key)
 		return "", false
-	case ok && cacheValue.deadline != infinite && !time.Now().After(cacheValue.deadline):
-		return cacheValue.value, true
 	case ok:
 		return cacheValue.value, true
 	default:
